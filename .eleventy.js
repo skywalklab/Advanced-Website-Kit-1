@@ -17,6 +17,13 @@ const isProduction = process.env.ELEVENTY_ENV === "PROD";
 
 // Filter Imports
 const filterFormatDate = require("./src/config/filters/formatDate");
+const pluginShopify = require("eleventy-plugin-shopify");
+
+// Config Imports
+const configShopify = require("./src/config/plugins/shopify");
+
+// Filter Imports
+const filterGetProductsInCollection = require("./src/config/filters/getProductsInCollection");
 
 module.exports = function (eleventyConfig) {
     /**
@@ -52,6 +59,10 @@ module.exports = function (eleventyConfig) {
         eleventyConfig.addPlugin(pluginCritical, configCritical);
     }
 
+    // Queries your Shopify store at build time to expose product and collection data under the `shopify` global object
+    // https://github.com/dleatherman/eleventy-plugin-shopify
+    eleventyConfig.addPlugin(pluginShopify, configShopify);
+
     /**
      *  PASSTHROUGH'S
      *      Copy/paste non-template files straight to /public, without any interference from the eleventy engine
@@ -85,6 +96,8 @@ module.exports = function (eleventyConfig) {
 
     eleventyConfig.addTemplateFormats("js");
     eleventyConfig.addExtension("js", configJs);
+
+    eleventyConfig.addFilter("getProductsInCollection", filterGetProductsInCollection);
 
     return {
         dir: {
